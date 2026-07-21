@@ -9,7 +9,7 @@
 
 // Override the default text color for buttons.
 .mat-mdc-raised-button.mat-primary {
-  --mdc-protected-button-label-text-color: #fff;
+  --mat-button-protected-label-text-color: #fff;
 }
 
 .mdc-text-field--focused:not(.mdc-text-field--disabled) .mdc-floating-label {
