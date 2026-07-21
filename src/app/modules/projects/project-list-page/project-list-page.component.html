@@ -3,7 +3,7 @@
   <div class="project-container">
     <div class="toolbar">
       <h2 class="fill">Project Gallery</h2>
-<!--      <ui-search (searchSubmitted)="updateTerm($event)"></ui-search>-->
+      <!--      <ui-search (searchSubmitted)="updateTerm($event)"></ui-search>-->
     </div>
     <div class="sidebar">
       <div class="sidebar-segment">
@@ -16,7 +16,7 @@
               <mat-chip-option
                 id="{{option.id}}"
                 (selectionChange)="selectPlatforms(option.id)"
-              >{{option.label}}
+                >{{option.label}}
               </mat-chip-option>
             }
           </mat-chip-listbox>
@@ -32,23 +32,25 @@
               <mat-chip-option
                 id="{{option.id}}"
                 (selectionChange)="selectCategories(option.id)"
-              >{{option.label}}
+                >{{option.label}}
               </mat-chip-option>
             }
           </mat-chip-listbox>
         </div>
       </div>
     </div>
-    <div class="project-list" *ngIf="project$ | async as projects">
-      @for (project of filteredProjects; track project.name) {
-        <app-project-card [project]="project"></app-project-card>
-      } @empty {
-        <div class="no-matches">
-          <p>No matches with these filters</p>
-          <button mat-raised-button (click)="resetFilters()">Reset Filters</button>
-        </div>
-      }
-    </div>
+    @if (project$ | async; as projects) {
+      <div class="project-list">
+        @for (project of filteredProjects; track project.name) {
+          <app-project-card [project]="project"></app-project-card>
+          } @empty {
+          <div class="no-matches">
+            <p>No matches with these filters</p>
+            <button mat-raised-button (click)="resetFilters()">Reset Filters</button>
+          </div>
+        }
+      </div>
+    }
 
   </div>
 

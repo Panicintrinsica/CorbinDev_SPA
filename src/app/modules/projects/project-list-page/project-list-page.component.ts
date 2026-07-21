@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { MatButton } from '@angular/material/button';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Observable, tap } from 'rxjs';
 import { Project } from '../../../models/project.model';
 import { ContentService } from '../../../services/content.service';
@@ -21,11 +21,10 @@ import { Meta, Title } from '@angular/platform-browser';
     MatButton,
     AsyncPipe,
     ProjectCardComponent,
-    NgIf,
     MatChipListbox,
     MatChipOption,
-    FormsModule,
-  ],
+    FormsModule
+],
   templateUrl: './project-list-page.component.html',
   styleUrl: './project-list-page.component.scss',
   standalone: true,

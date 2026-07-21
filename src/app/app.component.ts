@@ -1,5 +1,5 @@
 import { afterNextRender, Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ChildrenOutletContexts, RouterOutlet } from '@angular/router';
 import { UiNavComponent } from './modules/ui/ui-nav/ui-nav.component';
 import { UiFooterComponent } from './modules/ui/ui-footer/ui-footer.component';
@@ -8,7 +8,7 @@ import AOS from 'aos';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, RouterOutlet, UiNavComponent, UiFooterComponent],
+  imports: [RouterOutlet, UiNavComponent, UiFooterComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   animations: [slideInAnimation],
