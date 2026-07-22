@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { NgClass } from '@angular/common';
@@ -11,38 +11,30 @@ import { NgClass } from '@angular/common';
   standalone: true,
 })
 export class UiFooterComponent implements OnInit, OnDestroy {
-  year: any = new Date().getFullYear();
-  isHomePage: any;
+  year: number = new Date().getFullYear();
+  isHomePage = signal(false);
+  loading = signal(false);
 
-  currentRoute$!: Subscription;
-  loading = false;
+  private currentRoute$!: Subscription;
 
   constructor(private router: Router) {
-    this.isHomePage = this.router.url === '/';
+    this.isHomePage.set(this.router.url === '/' || this.router.url === '/home');
   }
 
   ngOnInit() {
     this.currentRoute$ = this.router.events.subscribe((event) => {
-      let currentRoute = this.router.url; // Grabs current route
-      this.isHomePage = currentRoute === '/' || currentRoute === '/home'; // Checks if current route is home route
+      const currentRoute = this.router.url;
+      this.isHomePage.set(currentRoute === '/' || currentRoute === '/home');
 
-      switch (true) {
-        case event instanceof NavigationStart: {
-          this.loading = true;
-          break;
-        }
-        case event instanceof NavigationEnd: {
-          setTimeout(() => (this.loading = false), 300);
-          break;
-        }
-        default: {
-          break;
-        }
+      if (event instanceof NavigationStart) {
+        this.loading.set(true);
+      } else if (event instanceof NavigationEnd) {
+        setTimeout(() => this.loading.set(false), 300);
       }
     });
   }
 
   ngOnDestroy() {
-    this.currentRoute$.unsubscribe();
+    this.currentRoute$?.unsubscribe();
   }
 }

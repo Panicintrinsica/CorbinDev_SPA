@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { SkillDialogComponent } from '../../skills/skill-dialog/skill-dialog.component';
@@ -42,17 +42,21 @@ export class ProjectPageComponent {
     route.paramMap.subscribe((params) => {
       const slug = params.get('slug');
       if (slug) {
-        this.projectService.fetchProjectByURI(slug).add(() => {
-          this.title.setTitle(`Corbin.dev - ${this.project().name}`);
-          this.meta.addTags([
-            {
-              name: 'description',
-              content: this.project().blurb,
-            },
-          ]);
-          this.skills.set(this.project().skills);
-        });
-      } else {
+        this.projectService.fetchProjectByURI(slug);
+      }
+    });
+
+    effect(() => {
+      const currentProj = this.project();
+      if (currentProj.name) {
+        this.title.setTitle(`Corbin.dev - ${currentProj.name}`);
+        this.meta.addTags([
+          {
+            name: 'description',
+            content: currentProj.blurb,
+          },
+        ]);
+        this.skills.set(currentProj.skills || []);
       }
     });
   }

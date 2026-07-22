@@ -1,4 +1,4 @@
-@if (showSpinner) {
+@if (showSpinner()) {
   <div class="center">
     <div class="wave"></div>
     <div class="wave"></div>
@@ -13,7 +13,7 @@
   </div>
 }
 
-@if (showText) {
+@if (showText()) {
   <div class="center">
     <span class="timeoutMsg">
       {{message}}

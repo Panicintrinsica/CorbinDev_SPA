@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { Skill } from '../../../models/skill.model';
 import { ContentService } from '../../../services/content.service';
 import { SkillDialogComponent } from '../skill-dialog/skill-dialog.component';
@@ -16,38 +16,32 @@ import { TagComponent } from '../../ui/ui-tag/tag.component';
   standalone: true,
 })
 export class SkillListComponent {
-  sortSkills: boolean = false;
-  skills: Skill[] = [];
+  sortSkills = signal(false);
+  searchInput = signal('');
+  skills = signal<Skill[]>([]);
 
-  // Filtered Arrays
-  frontend: Skill[] = [];
-  backend: Skill[] = [];
-  general: Skill[] = [];
-  other: Skill[] = [];
-  searchInput: string = '';
+  // Filtered Computed Signals
+  frontend = computed(() =>
+    this.skills().filter((skill) => skill.group === 'frontend'),
+  );
+  backend = computed(() =>
+    this.skills().filter((skill) => skill.group === 'backend'),
+  );
+  general = computed(() =>
+    this.skills().filter((skill) => skill.group === 'general'),
+  );
+  other = computed(() =>
+    this.skills().filter(
+      (skill) => !['frontend', 'backend', 'general'].includes(skill.group),
+    ),
+  );
 
   constructor(
     private server: ContentService,
     public dialog: MatDialog,
   ) {
     this.server.getDisplayedSkills().subscribe((skills) => {
-      this.skills = skills;
-
-      skills.forEach((item) => {
-        switch (item.group) {
-          case 'frontend':
-            this.frontend.push(item);
-            break;
-          case 'backend':
-            this.backend.push(item);
-            break;
-          case 'general':
-            this.general.push(item);
-            break;
-          default:
-            this.other.push(item);
-        }
-      });
+      this.skills.set(skills);
     });
   }
 

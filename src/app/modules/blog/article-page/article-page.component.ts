@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, effect, inject, OnInit } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { ActivatedRoute } from '@angular/router';
 import { BlogService } from '../blog.service';
@@ -22,24 +22,27 @@ export class ArticlePageComponent implements OnInit {
     private meta: Meta,
     private title: Title,
   ) {
-    route.paramMap
-      .subscribe((params) => {
-        const date = params.get('date');
-        const uri = params.get('uri');
+    route.paramMap.subscribe((params) => {
+      const date = params.get('date');
+      const uri = params.get('uri');
 
-        if (date && uri) {
-          this.blogService.fetchArticle(date, uri);
-        }
-      })
-      .add(() => {
-        this.title.setTitle(`Corbin.dev | ${this.article().title}`);
+      if (date && uri) {
+        this.blogService.fetchArticle(date, uri);
+      }
+    });
+
+    effect(() => {
+      const currentArticle = this.article();
+      if (currentArticle.title) {
+        this.title.setTitle(`Corbin.dev | ${currentArticle.title}`);
         this.meta.addTags([
           {
             name: 'description',
-            content: this.article().aboveFold,
+            content: currentArticle.aboveFold,
           },
         ]);
-      });
+      }
+    });
   }
 
   ngOnInit(): void {}

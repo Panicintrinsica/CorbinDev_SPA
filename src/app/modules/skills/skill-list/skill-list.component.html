@@ -5,34 +5,34 @@
     <input type="search" placeholder="Search Skills" [(ngModel)]="searchInput">
   </header>
   <section class="skills-body">
-    @if (sortSkills) {
+    @if (sortSkills()) {
       <div class="skillCategoryLabel">Frontend</div>
       <div class="tag-container">
-        @for (skill of frontend | skillSearch:searchInput; track skill){
+        @for (skill of frontend() | skillSearch:searchInput(); track skill){
           <ui-tag [type]="skill.isFeatured ? 'featured skill' : 'skill'" [text]="skill.name" (click)="viewSkill(skill.id)" ></ui-tag>
         }
       </div>
       <div class="skillCategoryLabel">Backend</div>
       <div class="tag-container">
-        @for (skill of backend | skillSearch:searchInput; track skill){
+        @for (skill of backend() | skillSearch:searchInput(); track skill){
           <ui-tag [type]="skill.isFeatured ? 'featured skill' : 'skill'" [text]="skill.name" (click)="viewSkill(skill.id)" ></ui-tag>
         }
       </div>
       <div class="skillCategoryLabel">General</div>
       <div class="tag-container">
-        @for (skill of general | skillSearch:searchInput; track skill){
+        @for (skill of general() | skillSearch:searchInput(); track skill){
           <ui-tag [type]="skill.isFeatured ? 'featured skill' : 'skill'" [text]="skill.name" (click)="viewSkill(skill.id)" ></ui-tag>
         }
       </div>
       <div class="skillCategoryLabel">Other</div>
       <div class="tag-container">
-        @for (skill of other | skillSearch:searchInput; track skill){
+        @for (skill of other() | skillSearch:searchInput(); track skill){
           <ui-tag [type]="skill.isFeatured ? 'featured skill' : 'skill'" [text]="skill.name" (click)="viewSkill(skill.id)" ></ui-tag>
         }
       </div>
     } @else {
       <div class="tag-container">
-        @for (skill of skills | skillSearch:searchInput; track skill){
+        @for (skill of skills() | skillSearch:searchInput(); track skill){
           <ui-tag [type]="skill.isFeatured ? 'featured skill' : 'skill'" [text]="skill.name" (click)="viewSkill(skill.id)" ></ui-tag>
         }
       </div>

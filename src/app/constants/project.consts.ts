@@ -2,7 +2,6 @@ export const ProjectPlatforms = [
   { id: 'web', label: 'Web' },
   { id: 'desktop', label: 'Desktop' },
   { id: 'mobile', label: 'Mobile' },
-
   { id: 'multi', label: 'Multi' },
 ];
 

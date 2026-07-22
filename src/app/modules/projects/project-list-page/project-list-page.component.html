@@ -41,7 +41,7 @@
     </div>
     @if (project$ | async; as projects) {
       <div class="project-list">
-        @for (project of filteredProjects; track project.name) {
+        @for (project of filteredProjects(); track project.name) {
           <app-project-card [project]="project"></app-project-card>
           } @empty {
           <div class="no-matches">

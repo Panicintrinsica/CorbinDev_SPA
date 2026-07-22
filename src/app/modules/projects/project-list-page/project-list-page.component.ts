@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, signal, ViewChild } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { AsyncPipe } from '@angular/common';
 import { Observable, tap } from 'rxjs';
@@ -35,8 +35,8 @@ export class ProjectListPageComponent {
 
   project$: Observable<Project[]>;
 
-  resultSet: Project[] = [];
-  filteredProjects: Project[] = [];
+  resultSet = signal<Project[]>([]);
+  filteredProjects = signal<Project[]>([]);
 
   platformOptions = ProjectPlatforms;
   categoryOptions = ProjectCategories;
@@ -63,8 +63,8 @@ export class ProjectListPageComponent {
 
     this.project$ = this.projectService.fetchPublicProjects().pipe(
       tap((result) => {
-        this.resultSet = result;
-        this.filteredProjects = result;
+        this.resultSet.set(result);
+        this.filteredProjects.set(result);
       }),
     );
   }
@@ -88,7 +88,7 @@ export class ProjectListPageComponent {
   }
 
   updateList() {
-    let newResults: Project[] = this.resultSet;
+    let newResults: Project[] = this.resultSet();
 
     if (this.selectedPlatforms.size != 0) {
       newResults = this.filterByPlatform(
@@ -108,7 +108,7 @@ export class ProjectListPageComponent {
       newResults = this.filterByName(newResults, this.searchTerm);
     }
 
-    this.filteredProjects = newResults;
+    this.filteredProjects.set(newResults);
   }
 
   filterByName(array: Project[], searchString: string) {

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit, signal } from '@angular/core';
 
 @Component({
   selector: 'ui-spinner',
@@ -7,18 +7,18 @@ import { Component, Input } from '@angular/core';
   standalone: true,
   styleUrl: './ui-spinner.component.scss',
 })
-export class UiSpinnerComponent {
+export class UiSpinnerComponent implements OnInit {
   @Input() timeout: number | null = null;
   @Input() message: string = '';
 
-  showSpinner: boolean = true;
-  showText: boolean = false;
+  showSpinner = signal(true);
+  showText = signal(false);
 
   ngOnInit() {
     if (this.timeout) {
       setTimeout(() => {
-        this.showSpinner = false;
-        this.showText = true;
+        this.showSpinner.set(false);
+        this.showText.set(true);
       }, this.timeout);
     }
   }

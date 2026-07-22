@@ -11,15 +11,14 @@
       <section class="biography-body">
         <markdown [data]="getContentBody(content(), 'main')" markdown></markdown>
       </section>
-
     </article>
-
 
     <div class="flex gap-small center selectable-button-row">
       @for (section of sections; track section.id) {
         <button mat-flat-button class="selectable-button" [ngClass]="{'selected' : section.id === selection()}" (click)="makeSelection(section.id)">{{ section.title }}</button>
       }
     </div>
+
 
     @switch (selection()) {
       @case ('books') { <app-bio-books/> }

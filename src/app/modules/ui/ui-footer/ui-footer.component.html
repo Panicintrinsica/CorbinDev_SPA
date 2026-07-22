@@ -1,5 +1,5 @@
 
-<footer [ngClass]="{'hidden': loading}" class="noprint">
+<footer [ngClass]="{'hidden': loading()}" class="noprint">
   <div class="social-links">
     <a class="uicon bskly-footer" href="https://bsky.app/profile/corbin.dev" target="_blank"></a>
     <a class="uicon mastodon-footer" rel="me" href="https://mastodon.social/@emrysCorbin" target="_blank"></a>
@@ -11,7 +11,7 @@
     Copyright © Emrys Corbin 2024 - {{ year }}
   </div>
 
-  @if(isHomePage){
+  @if(isHomePage()){
     <div class="video-credit">
       Keyart Video by <a href="https://pixabay.com/users/project-unknown-22383616/?utm_source=link-attribution&utm_medium=referral&utm_campaign=video&utm_content=123737">Mohamad Rafizan</a> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=video&utm_content=123737">Pixabay</a>
     </div>
