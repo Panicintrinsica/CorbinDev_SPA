@@ -1,0 +1,7 @@
+I am, admittedly, a person that values aesthetics. I love clothes, I love cosmetics, I love interior design and shiny math rocks and customizable lighting. I don't claim to have any particular "named" stylistic leanings. I don't self-identify with any music or fashion subcultures, and I tend to move through different "modes" of dress depending on mood, weather and occasions.
+
+"Cybergoth" is often the closest, but it is also not completely accurate since I do not commit fully to the various trappings like cyberdreads or platform boots. Other days I will feel more like going classic punk or grunge. During the winter and fall I will shift more into Scandinavian outdoor wear, suits, and other more traditional (but nice) men's fashion. I have a ton of athletic wear, but I mostly use it for it's intended purpose rather then everyday attire.
+
+I started painting my nails when I was about twelve, and I've been wearing full makeup since I was eighteen, which is also the year I first bleached my hair, got piercings, and a tattoo. It was a busy year. I definitely feel more "like myself" with unnaturally coloured hair at this point, and the longer I have my natural hair the more it starts to annoy me and feel wrong.
+
+I have a sewing machine and like making my own clothing, mostly because it is impossible to find the kinds of things I am actually looking for. Sadly, I have basically zero time to actually use it, and it is by far my least practiced craft. Making more stuff is very much on my extended to-do list.

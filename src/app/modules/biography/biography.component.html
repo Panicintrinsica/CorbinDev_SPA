@@ -1,38 +1,81 @@
 <div class="page">
 
-  <main class="flex column gap-small">
+  <article class="biography">
+    <header class="biography-header">
+      <div class="primary text-gradient bio-name">Emrys Corbin</div>
+      <div class="bio-pronouns">(He/They)</div>
+    </header>
 
-    <article class="biography">
-      <header class="biography-header">
-        <div class="primary text-gradient bio-name">Emrys Corbin</div>
-        <div class="bio-pronouns">(He/They)</div>
-      </header>
+    <section class="biography-body">
+      <markdown [data]="getContentBody(content(), 'main')"></markdown>
+    </section>
+  </article>
 
-      <section class="biography-body">
-        <markdown [data]="getContentBody(content(), 'main')" markdown></markdown>
-      </section>
-    </article>
+  <aside class="profile-aside">
 
-    <div class="flex gap-small center selectable-button-row">
-      @for (section of sections; track section.id) {
-        <button mat-flat-button class="selectable-button" [ngClass]="{'selected' : section.id === selection()}" (click)="makeSelection(section.id)">{{ section.title }}</button>
-      }
+    <div class="card profile-card">
+      <div class="photo-container">
+        <div class="profile-photo">
+          <img ngSrc="../assets/profile/tech.png" alt="Emrys Corbin" width="256" height="256" priority>
+        </div>
+      </div>
+
+      <div class="profile-card-header">
+        <span>METRICS</span>
+      </div>
+
+      <div class="info-container">
+        <table class="info-table">
+          @for (fact of facts(); track fact.title) {
+            <tr>
+              <th>{{fact.title}}</th>
+              <td>{{fact.value}}</td>
+            </tr>
+          }
+        </table>
+      </div>
+
     </div>
 
+  </aside>
 
+  <div class="flex gap-small center selectable-button-row">
+    @for (section of sections; track section.id) {
+      <button mat-flat-button class="selectable-button" [ngClass]="{'selected' : section.id === selection()}"
+              (click)="makeSelection(section.id)">{{ section.title }}
+      </button>
+    }
+  </div>
+
+  <div class="selection-output">
     @switch (selection()) {
-      @case ('books') { <app-bio-books/> }
-      @case ('drinks') { <app-bio-drinks/> }
-      @case ('engineer') { <app-bio-engineer/> }
-      @case ('fashion') { <app-bio-fashion/> }
-      @case ('food') { <app-bio-food/> }
-      @case ('games') { <app-bio-games/> }
-      @case ('music') { <app-bio-music/> }
+      @case ('books') {
+        <app-bio-books/>
+      }
+      @case ('drinks') {
+        <app-bio-drinks/>
+      }
+      @case ('engineer') {
+        <app-bio-engineer/>
+      }
+      @case ('fashion') {
+        <app-bio-fashion/>
+      }
+      @case ('food') {
+        <app-bio-food/>
+      }
+      @case ('games') {
+        <app-bio-games/>
+      }
+      @case ('music') {
+        <app-bio-music/>
+      }
       @default {
         <div class="no-matches">
 
         </div>
       }
     }
-  </main>
+  </div>
+
 </div>

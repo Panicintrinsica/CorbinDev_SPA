@@ -1,0 +1,258 @@
+
+<div class="calculator">
+  <h1>Cat Food Calculator</h1>
+
+  <form [formGroup]="calculatorForm" class="calculator-form">
+
+    <div class="calculator-col">
+          <h2>Inputs</h2>
+
+          <div class="input-card">
+            <div class="input-group">
+              <label for="cats">Number of Cats:</label>
+              <input
+                type="number"
+                id="cats"
+                formControlName="cats"
+                min="1"
+                step="1"
+                class="form-control">
+            </div>
+
+            <div class="input-group">
+              <label for="targetWeight">Target Weight (kg):</label>
+              <input
+                type="number"
+                id="targetWeight"
+                formControlName="targetWeight"
+                min="0.1"
+                step="0.1"
+                class="form-control">
+            </div>
+
+            <div class="input-group">
+              <label for="kcalPerKg">kcal per kg:</label>
+              <input
+                type="number"
+                id="kcalPerKg"
+                formControlName="kcalPerKg"
+                min="1"
+                step="1"
+                class="form-control">
+            </div>
+          </div>
+
+          <div class="input-card">
+            <h3>Wet Food Properties</h3>
+
+            <div class="input-group">
+              <label for="wetFoodWeight">Weight per Unit (g):</label>
+              <input
+                type="number"
+                id="wetFoodWeight"
+                formControlName="wetFoodWeight"
+                min="1"
+                step="1"
+                class="form-control">
+            </div>
+
+            <div class="input-group">
+              <label for="wetFoodEnergy">Energy per Unit (kcal):</label>
+              <input
+                type="number"
+                id="wetFoodEnergy"
+                formControlName="wetFoodEnergy"
+                min="1"
+                step="1"
+                class="form-control">
+            </div>
+
+            <div class="input-group">
+              <label for="wetUnitsPerCase">Units per Case:</label>
+              <input
+                type="number"
+                id="wetUnitsPerCase"
+                formControlName="wetUnitsPerCase"
+                min="1"
+                step="1"
+                class="form-control">
+            </div>
+
+            <div class="input-group">
+              <label for="wetCostPerCase">Cost per Case:</label>
+              <input
+                type="number"
+                id="wetCostPerCase"
+                formControlName="wetCostPerCase"
+                min="0.01"
+                step="0.01"
+                class="form-control">
+            </div>
+          </div>
+
+          <div class="input-card">
+            <h3>Dry Food Properties</h3>
+
+            <div class="input-group">
+              <label for="dryFoodWeight">Weight per Unit (g):</label>
+              <input
+                type="number"
+                id="dryFoodWeight"
+                formControlName="dryFoodWeight"
+                min="1"
+                step="1"
+                class="form-control">
+            </div>
+
+            <div class="input-group">
+              <label for="dryFoodEnergy">Energy per Unit (kcal):</label>
+              <input
+                type="number"
+                id="dryFoodEnergy"
+                formControlName="dryFoodEnergy"
+                min="1"
+                step="1"
+                class="form-control">
+            </div>
+
+            <div class="input-group">
+              <label for="dryCostPerUnit">Cost per Unit:</label>
+              <input
+                type="number"
+                id="dryCostPerUnit"
+                formControlName="dryCostPerUnit"
+                min="0.01"
+                step="0.01"
+                class="form-control">
+            </div>
+          </div>
+
+          <div class="input-card">
+            <h3>Meal Plan (per cat)</h3>
+
+            <div class="input-group slider-group">
+              <label for="wetMix">Wet Food Mix: <span>{{ wetMixPercentage() }}</span></label>
+              <input
+                type="range"
+                id="wetMix"
+                formControlName="wetMix"
+                min="0"
+                max="1"
+                step="0.01"
+                class="form-range">
+            </div>
+
+            <div class="input-group">
+              <label for="wetFeedings">Wet Food Feedings per Day:</label>
+              <input
+                type="number"
+                id="wetFeedings"
+                formControlName="wetFeedings"
+                min="0"
+                step="1"
+                class="form-control">
+            </div>
+
+            <div class="input-group">
+              <label for="dryFeedings">Dry Food Feedings per Day:</label>
+              <input
+                type="number"
+                id="dryFeedings"
+                formControlName="dryFeedings"
+                min="0"
+                step="1"
+                class="form-control">
+            </div>
+          </div>
+    </div>
+
+    <div class="calculator-col">
+        <h2>Results</h2>
+
+        @if (!results().isValid) {
+          <div class="validation-message">{{ results().validationMessage }}</div>
+        }
+
+        <div class="results-section" data-section="1">
+          <div class="result-item">
+            <span class="label">Target Energy per Cat:</span>
+            <span class="value">{{ results().energyReq | number:'1.1-1' }} kcal</span>
+          </div>
+
+          <div class="result-item">
+            <span class="label">Wet Food per Day:</span>
+            <span class="value">{{ results().wetPerDay | number:'1.1-1' }} g</span>
+          </div>
+
+          <div class="result-item">
+            <span class="label">Dry Food per Day:</span>
+            <span class="value">{{ (results().dryPerDay | number:'1.1-1') || '0.0' }} g</span>
+          </div>
+
+          <div class="result-item">
+            <span class="label">Wet Units per Day:</span>
+            <span class="value">{{ results().cansPerDay | number:'1.2-2' }} units</span>
+          </div>
+        </div>
+
+        <div class="results-section" data-section="2">
+          <h3>Meal Plan (per cat)</h3>
+
+          <div class="meal-plan-item">
+            <span class="meal-type">Wet Food:</span>
+            <span class="meal-details">{{ results().wetPortionSize | number:'1.1-1' }}g × {{ formValues().wetFeedings }} feedings</span>
+          </div>
+
+          <div class="meal-plan-item">
+            <span class="meal-type">Dry Food:</span>
+            <span class="meal-details">{{ (results().dryPortionSize | number:'1.1-1') || '0.0' }}g × {{ formValues().dryFeedings }} feeding</span>
+          </div>
+
+          <div class="results-subsection">
+            <h4>Energy Breakdown (per cat)</h4>
+
+            <div class="energy-item">
+              <span class="energy-label">Wet Food Energy:</span>
+              <span class="energy-value">{{ results().actualWetKcal | number:'1.1-1' }} kcal</span>
+            </div>
+
+            <div class="energy-item">
+              <span class="energy-label">Dry Food Energy:</span>
+              <span class="energy-value">{{ results().actualDryKcal | number:'1.1-1' }} kcal</span>
+            </div>
+
+            <div class="energy-item total-energy">
+              <span class="energy-label">Total Actual Energy:</span>
+              <span class="energy-value">{{ results().totalActualKcal | number:'1.1-1' }} kcal</span>
+            </div>
+
+            <div class="energy-item difference">
+              <span class="energy-label">Difference from Target:</span>
+              <span class="energy-value" [class]="getEnergyDifferenceClass(results().energyDifference)">
+              {{ (results().energyDifference >= 0 ? '+' : '') + (results().energyDifference | number:'1.1-1') }} kcal
+            </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="results-section" data-section="3">
+          <h3>Monthly Costs</h3>
+
+          <div class="result-item">
+            <span class="label">Wet Food Cost:</span>
+            <span class="value">¤{{ results().wetCostPerMonth | number:'1.2-2' }}</span>
+          </div>
+
+          <div class="result-item">
+            <span class="label">Dry Food Cost:</span>
+            <span class="value">¤{{ results().dryCostPerMonth | number:'1.2-2' }}</span>
+          </div>
+
+          <div class="result-item total">
+            <span class="label">Total Monthly Cost:</span>
+            <span class="value">¤{{ results().totalCost | number:'1.2-2' }}</span>
+          </div>
+        </div>
+      </div>
+  </form>
+</div>
