@@ -27,7 +27,11 @@
       </header>
 
       <section class="project-body">
-        <markdown [data]="project().details"></markdown>
+        @if (project().content) {
+          <ui-blocks [content]="project().content" />
+        } @else if (project().details) {
+          <markdown [data]="project().details"></markdown>
+        }
 
         <h2>Skills & Technology</h2>
         <div class="cutout">

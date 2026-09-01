@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { Article, ArticlePage } from '../../models/article.model';
+import { Article, ArticlePage, emptyArticle } from '../../models/article.model';
 import { HttpClient } from '@angular/common/http';
 import { ViewportScroller } from '@angular/common';
 import { Router } from '@angular/router';
@@ -10,18 +10,7 @@ import { Router } from '@angular/router';
 })
 export class BlogService {
   private API = environment.API;
-  private _article = signal<Article>({
-    aboveFold: '',
-    author: '',
-    belowFold: '',
-    category: '',
-    createdAt: '',
-    date: '',
-    tags: [],
-    title: '',
-    updatedAt: '',
-    uri: '',
-  });
+  private _article = signal<Article>(emptyArticle());
   private _articlePage = signal<Article[]>([]);
   private _searchResults = signal<Article[]>([]);
   private _isLastPage = signal(false);
@@ -64,7 +53,13 @@ export class BlogService {
       .get<Article>(`${this.API}/articles`, {
         params: { date: date, uri: selector },
       })
-      .subscribe((article) => this._article.set(article));
+      .subscribe({
+        next: (article) => this._article.set(article),
+        // A missing or unpublished article is a 404 now rather than a null body.
+        // Resetting is what keeps the previously-read article from lingering on
+        // screen under the new URL.
+        error: () => this._article.set(emptyArticle()),
+      });
   }
 
   fetchPage(size: number, page: number = 1, scroll: boolean = false) {

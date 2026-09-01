@@ -1,0 +1,77 @@
+<section class="page admin-articles">
+  <header class="admin-header">
+    <div class="admin-nav-links">
+      <a mat-button routerLink="/admin/articles" class="active">Articles</a>
+      <a mat-button routerLink="/admin/projects">Projects</a>
+      <a mat-button routerLink="/admin/skills">Skills</a>
+    </div>
+    <div class="pusher"></div>
+    <button mat-flat-button routerLink="/admin/articles/new">New article</button>
+    <button mat-button (click)="signOut()">Sign out</button>
+  </header>
+
+  <nav class="admin-filters">
+    @for (option of ['all', 'published', 'draft']; track option) {
+      <button
+        mat-button
+        [class.active]="filter() === option"
+        (click)="setFilter($any(option))"
+      >
+        {{ option }}
+      </button>
+    }
+  </nav>
+
+  @if (error(); as message) {
+    <div class="admin-error" role="alert">{{ message }}</div>
+  }
+
+  @if (loading()) {
+    <p class="admin-empty">Loading…</p>
+  } @else if (rows().length === 0) {
+    <p class="admin-empty">Nothing here yet.</p>
+  } @else {
+    <ul class="admin-rows">
+      @for (article of rows(); track article._id) {
+        <li class="admin-row">
+          <a class="row-title" [routerLink]="['/admin/articles', article._id]">
+            {{ article.title }}
+          </a>
+
+          <div class="row-meta">
+            <span class="row-status" [class.published]="article.isPublished">
+              {{ article.isPublished ? 'published' : 'draft' }}
+            </span>
+            <span class="row-category">{{ article.category }}</span>
+            <span class="row-date">{{ article.updatedAt | date: 'mediumDate' }}</span>
+          </div>
+
+          <div class="row-actions">
+            @if (article.isPublished) {
+              <a
+                mat-button
+                [routerLink]="['/blog/a', article.date, article.uri]"
+                target="_blank"
+                >View</a
+              >
+            }
+            <button
+              mat-icon-button
+              [class.confirming]="confirming() === article._id"
+              [attr.aria-label]="
+                confirming() === article._id
+                  ? 'Confirm deletion of ' + article.title
+                  : 'Delete ' + article.title
+              "
+              (click)="remove(article)"
+            >
+              <mat-icon>{{
+                confirming() === article._id ? 'delete_forever' : 'delete'
+              }}</mat-icon>
+            </button>
+          </div>
+        </li>
+      }
+    </ul>
+  }
+</section>

@@ -2,10 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { BlogService } from './blog.service';
 import { provideHttpClient } from '@angular/common/http';
-import {
-  HttpTestingController,
-  provideHttpClientTesting,
-} from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 describe('BlogService', () => {
   let service: BlogService;
@@ -15,7 +12,7 @@ describe('BlogService', () => {
       providers: [provideHttpClient(), provideHttpClientTesting()],
     });
 
-    const httpTesting = TestBed.inject(HttpTestingController);
+    service = TestBed.inject(BlogService);
   });
 
   it('should be created', () => {

@@ -1,0 +1,288 @@
+// Styling for rendered Editor.js block content.
+//
+// Global rather than component-scoped on purpose: a block's inline formatting
+// arrives through [innerHTML], and Angular's emulated encapsulation does not
+// stamp its scoping attribute onto nodes it did not create. Component styles
+// would reach the <p> and miss every <b>, <a> and <code> inside it.
+
+ui-blocks {
+  display: block;
+
+  // The measure is set here rather than on each block so a stretched image can
+  // deliberately break out of it.
+  --block-measure: 42rem;
+
+  > .block {
+    max-width: var(--block-measure);
+    margin-inline: auto;
+  }
+
+  > .block + .block {
+    margin-top: 1.1rem;
+  }
+
+  .block-paragraph {
+    font-family: var(--bodyFont), serif;
+    color: var(--textColor-normal);
+    line-height: 1.7;
+
+    a {
+      color: var(--primary-light);
+      text-decoration: underline;
+      text-underline-offset: 0.2em;
+      text-decoration-thickness: 1px;
+
+      &:hover {
+        color: var(--accent);
+      }
+    }
+
+    code {
+      font-family: ui-monospace, "Cascadia Code", "Source Code Pro", monospace;
+      font-size: 0.85em;
+      padding: 0.1em 0.35em;
+      border-radius: 4px;
+      background: var(--lighter-10);
+      border: 1px solid var(--lighter-10);
+    }
+  }
+
+  .block-header {
+    font-family: var(--headerFont), sans-serif;
+    color: var(--secondary);
+    line-height: 1.25;
+    margin-top: 2.2rem;
+    margin-bottom: 0.4rem;
+    scroll-margin-top: 5rem;
+  }
+
+  h2.block-header {
+    font-size: 1.9rem;
+  }
+  h3.block-header {
+    font-size: 1.55rem;
+  }
+  h4.block-header {
+    font-size: 1.3rem;
+  }
+  h5.block-header,
+  h6.block-header {
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    opacity: 0.8;
+  }
+
+  // --- Lists -----------------------------------------------------------------
+
+  .block-list {
+    display: block;
+
+    ul,
+    ol {
+      padding-left: 1.6rem;
+      margin: 0;
+    }
+
+    li {
+      line-height: 1.6;
+      margin-block: 0.35rem;
+
+      &::marker {
+        color: var(--secondary);
+      }
+    }
+
+    // A nested list sits inside its parent <li>, so it needs its own spacing
+    // rather than inheriting the top-level gap.
+    ui-block-list {
+      display: block;
+      margin-top: 0.35rem;
+    }
+  }
+
+  // --- Images ----------------------------------------------------------------
+
+  .block-image {
+    margin-block: 1.8rem;
+
+    img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 6px;
+    }
+
+    &.bordered img {
+      border: 1px solid var(--tag-border);
+    }
+
+    &.backdrop {
+      padding: 1rem;
+      border-radius: 8px;
+      background: var(--body-lowlight);
+    }
+
+    // Stretched images ignore the reading measure and run the full column.
+    &.stretched {
+      max-width: none;
+    }
+
+    figcaption {
+      margin-top: 0.5rem;
+      font-family: var(--uiFont), sans-serif;
+      font-size: 0.8rem;
+      text-align: center;
+      color: var(--textColor-normal);
+      opacity: 0.55;
+    }
+  }
+
+  // --- Code ------------------------------------------------------------------
+
+  .block-code {
+    max-width: none;
+    padding: 1rem;
+    border-radius: 6px;
+    // Long lines scroll inside the block instead of widening the article.
+    overflow-x: auto;
+    background: var(--body-lowlight);
+    border: 1px solid var(--lighter-10);
+
+    code {
+      font-family: ui-monospace, "Cascadia Code", "Source Code Pro", monospace;
+      font-size: 0.8rem;
+      line-height: 1.55;
+      white-space: pre;
+    }
+  }
+
+  // --- Quotes ----------------------------------------------------------------
+
+  .block-quote {
+    margin: 1.8rem auto;
+    padding: 0.2rem 0 0.2rem 1.2rem;
+    border-left: 4px solid var(--secondary);
+
+    p {
+      font-size: 1.05em;
+      font-style: italic;
+      color: var(--textColor-normal);
+      line-height: 1.65;
+    }
+
+    cite {
+      display: block;
+      margin-top: 0.6rem;
+      font-family: var(--uiFont), sans-serif;
+      font-size: 0.8rem;
+      font-style: normal;
+      opacity: 0.6;
+
+      &::before {
+        content: "— ";
+      }
+    }
+
+    &.center {
+      text-align: center;
+      border-left: none;
+      padding-left: 0;
+    }
+  }
+
+  // --- Delimiter -------------------------------------------------------------
+
+  .block-delimiter {
+    width: 6rem;
+    margin: 2.4rem auto;
+    border: none;
+    border-top: 2px solid var(--lighter-25);
+  }
+
+  // --- Tables ----------------------------------------------------------------
+
+  .block-table {
+    // The wrapper scrolls, so a wide table never forces the page sideways.
+    overflow-x: auto;
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    th,
+    td {
+      padding: 0.5rem 0.7rem;
+      text-align: left;
+      border: 1px solid var(--lighter-10);
+      vertical-align: top;
+    }
+
+    th {
+      font-family: var(--headerFont), sans-serif;
+      color: var(--secondary);
+      background: var(--body-lowlight);
+    }
+
+    tbody tr:nth-child(even) {
+      background: var(--darker-25);
+    }
+  }
+}
+
+// The editor writes into the same document, so its own surface gets the site's
+// colours instead of Editor.js' default white sheet.
+.editorjs-host {
+  --block-measure: none;
+
+  color: var(--textColor-normal);
+
+  .codex-editor__redactor {
+    padding-bottom: 12rem !important;
+  }
+
+  .ce-block__content,
+  .ce-toolbar__content {
+    max-width: 46rem;
+  }
+
+  .ce-toolbar__plus,
+  .ce-toolbar__settings-btn {
+    color: var(--textColor-normal);
+    background: var(--body-highlight);
+    border: 1px solid var(--lighter-10);
+
+    &:hover {
+      background: var(--body-accent);
+    }
+  }
+
+  .ce-popover {
+    --color-background-primary: var(--body);
+    --color-background-primary-hover: var(--body-accent);
+    --color-text-primary: var(--textColor-normal);
+    --color-border-icon: var(--lighter-10);
+    --color-background-icon: var(--body-highlight);
+  }
+
+  .ce-inline-toolbar {
+    color: var(--textColor-normal);
+    background: var(--body);
+    border: 1px solid var(--lighter-10);
+  }
+
+  .cdx-block,
+  .ce-paragraph,
+  .ce-header {
+    color: var(--textColor-normal);
+  }
+
+  .ce-code__textarea,
+  .cdx-input {
+    color: var(--textColor-normal);
+    background: var(--body-lowlight);
+    border-color: var(--lighter-10);
+  }
+}

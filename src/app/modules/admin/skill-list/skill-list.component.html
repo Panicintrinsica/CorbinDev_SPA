@@ -1,0 +1,72 @@
+<section class="page admin-skills">
+  <header class="admin-header">
+    <div class="admin-nav-links">
+      <a mat-button routerLink="/admin/articles">Articles</a>
+      <a mat-button routerLink="/admin/projects">Projects</a>
+      <a mat-button routerLink="/admin/skills" class="active">Skills</a>
+    </div>
+    <div class="pusher"></div>
+    <button mat-flat-button routerLink="/admin/skills/new">New skill</button>
+    <button mat-button (click)="signOut()">Sign out</button>
+  </header>
+
+  <nav class="admin-filters">
+    @for (option of ['all', 'published', 'draft']; track option) {
+      <button
+        mat-button
+        [class.active]="filter() === option"
+        (click)="setFilter($any(option))"
+      >
+        {{ option }}
+      </button>
+    }
+  </nav>
+
+  @if (error(); as message) {
+    <div class="admin-error" role="alert">{{ message }}</div>
+  }
+
+  @if (loading()) {
+    <p class="admin-empty">Loading…</p>
+  } @else if (rows().length === 0) {
+    <p class="admin-empty">No skills found.</p>
+  } @else {
+    <ul class="admin-rows">
+      @for (skill of rows(); track skill._id) {
+        <li class="admin-row">
+          <a class="row-title" [routerLink]="['/admin/skills', skill._id]">
+            {{ skill.name }}
+          </a>
+
+          <div class="row-meta">
+            <span class="row-status" [class.published]="skill.isPublished">
+              {{ skill.isPublished ? 'published' : 'draft' }}
+            </span>
+            <span class="row-group">{{ skill.group }}</span>
+            <span class="row-level">{{ skill.level }}% ({{ skill.level | levelToName }})</span>
+            @if (skill.isFeatured) {
+              <span class="row-featured">★ Featured</span>
+            }
+          </div>
+
+          <div class="row-actions">
+            <button
+              mat-icon-button
+              [class.confirming]="confirming() === skill._id"
+              [attr.aria-label]="
+                confirming() === skill._id
+                  ? 'Confirm deletion of ' + skill.name
+                  : 'Delete ' + skill.name
+              "
+              (click)="remove(skill)"
+            >
+              <mat-icon>{{
+                confirming() === skill._id ? 'delete_forever' : 'delete'
+              }}</mat-icon>
+            </button>
+          </div>
+        </li>
+      }
+    </ul>
+  }
+</section>

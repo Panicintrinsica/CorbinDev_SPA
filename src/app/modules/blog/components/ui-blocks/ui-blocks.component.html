@@ -1,0 +1,109 @@
+@for (block of blocks(); track block.id ?? $index) {
+  @switch (block.type) {
+    @case ('paragraph') {
+      <p class="block block-paragraph" [innerHTML]="block.data.text"></p>
+    }
+
+    @case ('header') {
+      <!-- An explicit tag per level: the article's own <h1> is its title, so the
+           heading tool starts at h2 and the API clamps anything outside 2-6. -->
+      @switch (block.data.level) {
+        @case (3) {
+          <h3 class="block block-header" [innerHTML]="block.data.text"></h3>
+        }
+        @case (4) {
+          <h4 class="block block-header" [innerHTML]="block.data.text"></h4>
+        }
+        @case (5) {
+          <h5 class="block block-header" [innerHTML]="block.data.text"></h5>
+        }
+        @case (6) {
+          <h6 class="block block-header" [innerHTML]="block.data.text"></h6>
+        }
+        @default {
+          <h2 class="block block-header" [innerHTML]="block.data.text"></h2>
+        }
+      }
+    }
+
+    @case ('list') {
+      <ui-block-list
+        class="block block-list"
+        [items]="block.data.items ?? []"
+        [listStyle]="block.data.style"
+      />
+    }
+
+    @case ('image') {
+      <figure
+        class="block block-image"
+        [class.stretched]="block.data.stretched"
+        [class.bordered]="block.data.withBorder"
+        [class.backdrop]="block.data.withBackground"
+      >
+        <!-- width/height come from the header the API read at upload time, so the
+             browser reserves the right box before the bytes arrive. -->
+        <img
+          [src]="mediaUrl(block.data.file?.url)"
+          [attr.width]="block.data.file?.width ?? null"
+          [attr.height]="block.data.file?.height ?? null"
+          [alt]="altText(block.data.caption)"
+          loading="lazy"
+          decoding="async"
+        />
+        @if (block.data.caption) {
+          <figcaption [innerHTML]="block.data.caption"></figcaption>
+        }
+      </figure>
+    }
+
+    @case ('code') {
+      <!-- Interpolated, not innerHTML: code is stored as plain text and must stay
+           that way. Prism rewrites this in place after hydration. -->
+      <pre
+        [class]="'block block-code ' + languageClass(block)"
+      ><code [class]="languageClass(block)">{{ block.data.code }}</code></pre>
+    }
+
+    @case ('quote') {
+      <blockquote
+        class="block block-quote"
+        [class.center]="block.data.alignment === 'center'"
+      >
+        <p [innerHTML]="block.data.text"></p>
+        @if (block.data.caption) {
+          <cite [innerHTML]="block.data.caption"></cite>
+        }
+      </blockquote>
+    }
+
+    @case ('delimiter') {
+      <hr class="block block-delimiter" />
+    }
+
+    @case ('table') {
+      <div class="block block-table">
+        <table>
+          @if (block.data.withHeadings) {
+            <thead>
+              <tr>
+                @for (cell of headerRow(block); track $index) {
+                  <th [innerHTML]="cell"></th>
+                }
+              </tr>
+            </thead>
+          }
+          <tbody>
+            @for (row of bodyRows(block); track $index) {
+              <tr>
+                @for (cell of row; track $index) {
+                  <td [innerHTML]="cell"></td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  }
+}

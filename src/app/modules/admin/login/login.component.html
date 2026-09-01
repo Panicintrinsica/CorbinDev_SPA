@@ -1,0 +1,57 @@
+<section class="page admin-login">
+  <form class="login-card" (ngSubmit)="submit()">
+    <h1 class="bold text-gradient">Sign in</h1>
+
+    @if (error(); as message) {
+      <div class="login-error" role="alert">{{ message }}</div>
+    }
+
+    @if (!mfaToken()) {
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input
+          matInput
+          type="email"
+          name="email"
+          autocomplete="username"
+          required
+          [ngModel]="email()"
+          (ngModelChange)="email.set($event)"
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Password</mat-label>
+        <input
+          matInput
+          type="password"
+          name="password"
+          autocomplete="current-password"
+          required
+          [ngModel]="password()"
+          (ngModelChange)="password.set($event)"
+        />
+      </mat-form-field>
+    } @else {
+      <p class="login-hint">Enter the code from your authenticator app.</p>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Authentication code</mat-label>
+        <input
+          matInput
+          type="text"
+          name="totp"
+          inputmode="numeric"
+          autocomplete="one-time-code"
+          required
+          [ngModel]="totpCode()"
+          (ngModelChange)="totpCode.set($event)"
+        />
+      </mat-form-field>
+    }
+
+    <button mat-flat-button type="submit" [disabled]="busy()">
+      {{ busy() ? 'Working…' : mfaToken() ? 'Verify' : 'Sign in' }}
+    </button>
+  </form>
+</section>

@@ -36,8 +36,12 @@
 <!--      }-->
     </div>
 
-    @if (skill().notes) {
-      <div class="notes" [innerHTML]="skill().notes" markdown></div>
+    @if (isBlockContent()) {
+      <div class="notes">
+        <ui-blocks [content]="blockContent()" />
+      </div>
+    } @else if (notesString()) {
+      <div class="notes" [innerHTML]="notesString()" markdown></div>
     }
 
     <div class="skill-actions">

@@ -1,0 +1,103 @@
+<section class="page admin-editor">
+  <header class="admin-header">
+    <a mat-button routerLink="/admin/articles">← Articles</a>
+    <div class="pusher"></div>
+
+    @if (dirty()) {
+      <span class="save-state unsaved">Unsaved changes</span>
+    } @else if (savedAt(); as at) {
+      <span class="save-state">Saved</span>
+    }
+
+    <button mat-button (click)="togglePreview()">
+      {{ previewing() ? 'Edit' : 'Preview' }}
+    </button>
+    <button mat-stroked-button [disabled]="saving()" (click)="save(false)">
+      Save draft
+    </button>
+    <button mat-flat-button [disabled]="saving()" (click)="save(true)">
+      {{ isPublished() ? 'Save & publish' : 'Publish' }}
+    </button>
+  </header>
+
+  @if (error(); as message) {
+    <div class="admin-error" role="alert">{{ message }}</div>
+  }
+
+  @if (loading()) {
+    <p class="admin-empty">Loading…</p>
+  } @else {
+    <div class="editor-meta">
+      <mat-form-field appearance="outline" class="field-title">
+        <mat-label>Title</mat-label>
+        <input
+          matInput
+          name="title"
+          [ngModel]="title()"
+          (ngModelChange)="title.set($event); touch()"
+        />
+        @if (permalink(); as link) {
+          <mat-hint>{{ link }}</mat-hint>
+        } @else {
+          <mat-hint>The URL is fixed from this title when the article is first saved.</mat-hint>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="field-category">
+        <mat-label>Category</mat-label>
+        <input
+          matInput
+          name="category"
+          [ngModel]="category()"
+          (ngModelChange)="category.set($event); touch()"
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="field-tags">
+        <mat-label>Tags</mat-label>
+        <input
+          matInput
+          name="tags"
+          [ngModel]="tagsText()"
+          (ngModelChange)="tagsText.set($event); touch()"
+        />
+        <mat-hint>Comma separated.</mat-hint>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="field-excerpt">
+        <mat-label>Excerpt</mat-label>
+        <textarea
+          matInput
+          rows="2"
+          name="excerpt"
+          [ngModel]="excerpt()"
+          (ngModelChange)="excerpt.set($event); touch()"
+        ></textarea>
+        <mat-hint>Leave blank to derive one from the opening paragraphs.</mat-hint>
+      </mat-form-field>
+
+      <mat-slide-toggle
+        class="field-published"
+        [ngModel]="isPublished()"
+        (ngModelChange)="isPublished.set($event); touch()"
+        name="published"
+        >Published</mat-slide-toggle
+      >
+    </div>
+
+    <!-- The editor is kept alive behind the preview rather than destroyed and
+         rebuilt, so toggling back does not cost a reload or lose scroll position. -->
+    <div class="editor-body" [hidden]="previewing()">
+      <app-editor [content]="content()" (changed)="onContentChange($event)" />
+    </div>
+
+    @if (previewing()) {
+      <article class="blog preview">
+        <header class="blog-header">
+          <h1 class="bold text-gradient">{{ title() }}</h1>
+        </header>
+        <ui-blocks [content]="content()" />
+      </article>
+    }
+  }
+</section>

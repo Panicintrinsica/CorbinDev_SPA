@@ -1,0 +1,82 @@
+<section class="page admin-projects">
+  <header class="admin-header">
+    <div class="admin-nav-links">
+      <a mat-button routerLink="/admin/articles">Articles</a>
+      <a mat-button routerLink="/admin/projects" class="active">Projects</a>
+      <a mat-button routerLink="/admin/skills">Skills</a>
+    </div>
+    <div class="pusher"></div>
+    <button mat-flat-button routerLink="/admin/projects/new">New project</button>
+    <button mat-button (click)="signOut()">Sign out</button>
+  </header>
+
+  <nav class="admin-filters">
+    @for (option of ['all', 'published', 'draft']; track option) {
+      <button
+        mat-button
+        [class.active]="filter() === option"
+        (click)="setFilter($any(option))"
+      >
+        {{ option }}
+      </button>
+    }
+  </nav>
+
+  @if (error(); as message) {
+    <div class="admin-error" role="alert">{{ message }}</div>
+  }
+
+  @if (loading()) {
+    <p class="admin-empty">Loading…</p>
+  } @else if (rows().length === 0) {
+    <p class="admin-empty">No projects found.</p>
+  } @else {
+    <ul class="admin-rows">
+      @for (project of rows(); track project._id) {
+        <li class="admin-row">
+          <a class="row-title" [routerLink]="['/admin/projects', project._id]">
+            {{ project.name }}
+          </a>
+
+          <div class="row-meta">
+            <span class="row-status" [class.published]="project.isPublished">
+              {{ project.isPublished ? 'published' : 'draft' }}
+            </span>
+            <span class="row-category">{{ project.category }}</span>
+            <span class="row-platform">{{ project.platform }}</span>
+            @if (project.isCurrent) {
+              <span class="row-current">Current</span>
+            } @else if (project.startDate) {
+              <span class="row-date">{{ project.startDate | date: 'MMM yyyy' }}</span>
+            }
+          </div>
+
+          <div class="row-actions">
+            @if (project.isPublished) {
+              <a
+                mat-button
+                [routerLink]="['/project', project.uri]"
+                target="_blank"
+                >View</a
+              >
+            }
+            <button
+              mat-icon-button
+              [class.confirming]="confirming() === project._id"
+              [attr.aria-label]="
+                confirming() === project._id
+                  ? 'Confirm deletion of ' + project.name
+                  : 'Delete ' + project.name
+              "
+              (click)="remove(project)"
+            >
+              <mat-icon>{{
+                confirming() === project._id ? 'delete_forever' : 'delete'
+              }}</mat-icon>
+            </button>
+          </div>
+        </li>
+      }
+    </ul>
+  }
+</section>

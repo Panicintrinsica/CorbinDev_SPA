@@ -4,7 +4,12 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import {
+  provideHttpClient,
+  withFetch,
+  withInterceptors,
+} from '@angular/common/http';
+import { authInterceptor } from './auth/auth.interceptor';
 import { provideMarkdown } from 'ngx-markdown';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideNativeDateAdapter } from '@angular/material/core';
@@ -16,7 +21,7 @@ import {
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZonelessChangeDetection(),
-    provideHttpClient(withFetch()),
+    provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
     provideMarkdown(),
     provideAnimations(),
     provideRouter(routes),

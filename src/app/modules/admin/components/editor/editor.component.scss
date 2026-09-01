@@ -1,0 +1,29 @@
+// The editor surface itself. Block content styling lives in styles/blocks.scss,
+// because Editor.js builds its DOM outside Angular's view encapsulation and
+// component-scoped rules would never reach it.
+
+.editor-shell {
+  position: relative;
+  min-height: 24rem;
+  padding: 1rem 0.5rem;
+  border-radius: 6px;
+  background: var(--body-lowlight);
+  border: 1px solid var(--lighter-10);
+}
+
+.editor-loading {
+  padding: 1rem;
+  font-family: var(--uiFont), sans-serif;
+  opacity: 0.5;
+}
+
+.editor-error {
+  margin: 0 1rem 0.75rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 4px;
+  font-family: var(--uiFont), sans-serif;
+  font-size: 0.8rem;
+  color: hsl(10, 90%, 80%);
+  background: hsla(10, 80%, 40%, 0.2);
+  border: 1px solid hsla(10, 80%, 60%, 0.4);
+}

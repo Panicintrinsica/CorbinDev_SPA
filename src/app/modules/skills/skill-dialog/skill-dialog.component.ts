@@ -14,6 +14,10 @@ import { UiSpinnerComponent } from '../../ui/ui-spinner/ui-spinner.component';
 import { TagComponent } from '../../ui/ui-tag/tag.component';
 import { MatAnchor } from '@angular/material/button';
 
+import { UiBlocksComponent } from '../../blog/components/ui-blocks/ui-blocks.component';
+import { computed } from '@angular/core';
+import type { OutputData } from '@editorjs/editorjs';
+
 @Component({
   selector: 'ui-skill-dialog',
   animations: [ProjectListAnim],
@@ -24,6 +28,7 @@ import { MatAnchor } from '@angular/material/button';
     UiSpinnerComponent,
     TagComponent,
     MatAnchor,
+    UiBlocksComponent,
   ],
   templateUrl: './skill-dialog.component.html',
   standalone: true,
@@ -35,6 +40,22 @@ export class SkillDialogComponent {
 
   skill = this.skillService.skillDetails;
   projects = this.projectService.projectLinks;
+
+  isBlockContent = computed(() => {
+    const doc = this.skill().content || this.skill().notes;
+    return typeof doc === 'object' && doc !== null && 'blocks' in doc;
+  });
+
+  blockContent = computed<OutputData | undefined>(() => {
+    const doc = this.skill().content || this.skill().notes;
+    return typeof doc === 'object' && doc !== null && 'blocks' in doc
+      ? (doc as OutputData)
+      : undefined;
+  });
+
+  notesString = computed<string>(() =>
+    typeof this.skill().notes === 'string' ? (this.skill().notes as string) : '',
+  );
 
   constructor(
     @Inject(MAT_DIALOG_DATA)

@@ -1,0 +1,66 @@
+.admin-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+
+  .pusher {
+    flex: 1;
+  }
+}
+
+.save-state {
+  font-family: var(--uiFont), sans-serif;
+  font-size: 0.75rem;
+  opacity: 0.5;
+
+  &.unsaved {
+    color: var(--secondary);
+    opacity: 0.9;
+  }
+}
+
+.admin-error {
+  margin-bottom: 1rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 4px;
+  font-family: var(--uiFont), sans-serif;
+  font-size: 0.85rem;
+  color: hsl(10, 90%, 80%);
+  background: hsla(10, 80%, 40%, 0.2);
+  border: 1px solid hsla(10, 80%, 60%, 0.4);
+}
+
+.admin-empty {
+  opacity: 0.5;
+}
+
+.editor-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 0 1rem;
+  margin-bottom: 1.5rem;
+
+  .field-title,
+  .full-width {
+    grid-column: 1 / -1;
+  }
+
+  .toggles-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    align-items: center;
+    margin: 0.5rem 0 1rem 0;
+  }
+}
+
+.skill-preview-wrapper {
+  padding: 1.5rem 0;
+  max-width: 600px;
+  margin: 0 auto;
+
+  .preview-blocks {
+    margin: 1rem 0;
+  }
+}

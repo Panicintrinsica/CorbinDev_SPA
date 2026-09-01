@@ -12,6 +12,8 @@ import { ProjectService } from '../project.service';
 import { Meta, Title } from '@angular/platform-browser';
 import { SkillTag } from '../../../models/skill.model';
 
+import { UiBlocksComponent } from '../../blog/components/ui-blocks/ui-blocks.component';
+
 @Component({
   selector: 'app-project',
   animations: [SkillListAnim],
@@ -22,6 +24,7 @@ import { SkillTag } from '../../../models/skill.model';
     DatePipe,
     GoBackDirective,
     TagComponent,
+    UiBlocksComponent,
   ],
   templateUrl: './project-page.component.html',
   styleUrl: './project-page.component.scss',
@@ -61,7 +64,8 @@ export class ProjectPageComponent {
     });
   }
 
-  viewSkill(id: string) {
+  viewSkill(id: string | undefined) {
+    if (!id) return;
     this.dialog.open(SkillDialogComponent, {
       data: id,
       autoFocus: false,

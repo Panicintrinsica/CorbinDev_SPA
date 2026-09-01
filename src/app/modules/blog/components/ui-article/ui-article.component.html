@@ -1,47 +1,44 @@
 @if (data()) {
-  <article class="blog {{displayStyle()}}">
-
+  <article class="blog {{ displayStyle() }}">
     <header class="blog-header">
-      <h1 class="bold text-gradient">{{data().title}}</h1>
-      @if (false) {
-        <img class="article-image" ngSrc="../../../../../assets/debug/article-header.png" alt="" height="562"
-             width="1000">
-      }
+      <h1 class="bold text-gradient">{{ data().title }}</h1>
     </header>
 
     <section class="blog-meta">
       <div class="tag-container">
         <ui-tag [text]="data().category" [type]="data().category"></ui-tag>
-        @for (tag of data().tags; track tag){
+        @for (tag of data().tags; track tag) {
           <ui-tag type="article-tag" [text]="tag"></ui-tag>
         }
       </div>
     </section>
 
     <section class="blog-body">
-      <markdown [data]="data().aboveFold | blog" class="blog-article text"></markdown>
-      @if (!isStub()) {
-        <markdown [data]="data().belowFold | blog" class="blog-article text"></markdown>
+      @if (isStub()) {
+        <p class="article-excerpt text">{{ data().excerpt }}</p>
+      } @else {
+        <ui-blocks [content]="data().content" />
       }
     </section>
 
-    <footer class="blog-footer">
+    <footer class="blog-footer" [class.stub]="isStub()" [class.full]="!isStub()">
       @if (isStub()) {
-        <div class="time">{{ data().createdAt | date : 'shortDate' }}</div>
+        <div class="time">{{ data().createdAt | date: 'shortDate' }}</div>
         <div class="pusher"></div>
-        <button mat-button routerLink="/blog/a/{{data().date}}/{{data().uri}}">Read More</button>
+        <button mat-button routerLink="/blog/a/{{ data().date }}/{{ data().uri }}">
+          Read More
+        </button>
       } @else {
-
         <div class="meta-row">
           <div class="meta-item">
             <div class="meta-label">Posted:</div>
-            <div class="meta-data">{{ data().createdAt | date : 'short'  }}</div>
+            <div class="meta-data">{{ data().createdAt | date: 'short' }}</div>
           </div>
 
           @if (data().createdAt != data().updatedAt) {
             <div class="meta-item">
               <div class="meta-label">Update:</div>
-              <div class="meta-data">{{ data().updatedAt | date : 'short'  }}</div>
+              <div class="meta-data">{{ data().updatedAt | date: 'short' }}</div>
             </div>
           }
 
@@ -53,13 +50,8 @@
               </address>
             </div>
           </div>
-
         </div>
       }
     </footer>
-
-
   </article>
-
-
 }

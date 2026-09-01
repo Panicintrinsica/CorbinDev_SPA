@@ -38,7 +38,7 @@ export class ArticlePageComponent implements OnInit {
         this.meta.addTags([
           {
             name: 'description',
-            content: currentArticle.aboveFold,
+            content: currentArticle.excerpt,
           },
         ]);
       }

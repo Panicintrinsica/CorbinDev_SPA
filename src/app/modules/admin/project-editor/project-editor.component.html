@@ -1,0 +1,234 @@
+<section class="page admin-editor">
+  <header class="admin-header">
+    <a mat-button routerLink="/admin/projects">← Projects</a>
+    <div class="pusher"></div>
+
+    @if (dirty()) {
+      <span class="save-state unsaved">Unsaved changes</span>
+    } @else if (savedAt(); as at) {
+      <span class="save-state">Saved</span>
+    }
+
+    <button mat-button (click)="togglePreview()">
+      {{ previewing() ? 'Edit' : 'Preview' }}
+    </button>
+    <button mat-stroked-button [disabled]="saving()" (click)="save(false)">
+      Save draft
+    </button>
+    <button mat-flat-button [disabled]="saving()" (click)="save(true)">
+      {{ isPublished() ? 'Save & publish' : 'Publish' }}
+    </button>
+  </header>
+
+  @if (error(); as message) {
+    <div class="admin-error" role="alert">{{ message }}</div>
+  }
+
+  @if (loading()) {
+    <p class="admin-empty">Loading…</p>
+  } @else {
+    <div class="editor-meta">
+      <mat-form-field appearance="outline" class="field-title">
+        <mat-label>Project Name</mat-label>
+        <input
+          matInput
+          name="name"
+          [ngModel]="name()"
+          (ngModelChange)="name.set($event); touch()"
+        />
+        @if (permalink(); as link) {
+          <mat-hint>{{ link }}</mat-hint>
+        } @else {
+          <mat-hint>The URL slug is generated from this name when first saved.</mat-hint>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="field-category">
+        <mat-label>Category</mat-label>
+        <mat-select
+          name="category"
+          [ngModel]="category()"
+          (ngModelChange)="category.set($event); touch()"
+        >
+          @for (cat of categories; track cat.value) {
+            <mat-option [value]="cat.value">{{ cat.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="field-platform">
+        <mat-label>Platform</mat-label>
+        <input
+          matInput
+          name="platform"
+          [ngModel]="platform()"
+          (ngModelChange)="platform.set($event); touch()"
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="field-role">
+        <mat-label>Role</mat-label>
+        <input
+          matInput
+          name="role"
+          [ngModel]="role()"
+          (ngModelChange)="role.set($event); touch()"
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="field-client">
+        <mat-label>Client / Organization</mat-label>
+        <input
+          matInput
+          name="client"
+          [ngModel]="client()"
+          (ngModelChange)="client.set($event); touch()"
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="field-start-date">
+        <mat-label>Start Date (e.g. 2024-01)</mat-label>
+        <input
+          matInput
+          name="startDate"
+          [ngModel]="startDate()"
+          (ngModelChange)="startDate.set($event); touch()"
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="field-end-date">
+        <mat-label>End Date (e.g. 2024-12)</mat-label>
+        <input
+          matInput
+          name="endDate"
+          [disabled]="isCurrent()"
+          [ngModel]="endDate()"
+          (ngModelChange)="endDate.set($event); touch()"
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="field-link">
+        <mat-label>Project Link</mat-label>
+        <input
+          matInput
+          name="link"
+          [ngModel]="link()"
+          (ngModelChange)="link.set($event); touch()"
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="field-link-type">
+        <mat-label>Link Type (e.g. GitHub, Website, Demo)</mat-label>
+        <input
+          matInput
+          name="linkType"
+          [ngModel]="linkType()"
+          (ngModelChange)="linkType.set($event); touch()"
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="field-thumbnail">
+        <mat-label>Thumbnail URL</mat-label>
+        <input
+          matInput
+          name="thumbnail"
+          [ngModel]="thumbnail()"
+          (ngModelChange)="thumbnail.set($event); touch()"
+        />
+      </mat-form-field>
+
+      <div class="field-skills full-width">
+        <label class="skills-label">Skills & Technologies (Type to add new)</label>
+        <ng-select
+          [items]="availableSkills()"
+          [multiple]="true"
+          [addTag]="addSkillTag"
+          bindLabel="name"
+          bindValue="_id"
+          [ngModel]="selectedSkillIds()"
+          (ngModelChange)="selectedSkillIds.set($event); touch()"
+          placeholder="Select or create skills…"
+        >
+        </ng-select>
+      </div>
+
+      <mat-form-field appearance="outline" class="field-blurb full-width">
+        <mat-label>Blurb / Excerpt</mat-label>
+        <textarea
+          matInput
+          rows="2"
+          name="blurb"
+          [ngModel]="blurb()"
+          (ngModelChange)="blurb.set($event); touch()"
+        ></textarea>
+        <mat-hint>Leave blank to derive from initial body blocks.</mat-hint>
+      </mat-form-field>
+
+      <div class="toggles-row full-width">
+        <mat-slide-toggle
+          class="field-toggle"
+          [ngModel]="isCurrent()"
+          (ngModelChange)="isCurrent.set($event); touch()"
+          name="isCurrent"
+          >Current Project</mat-slide-toggle
+        >
+
+        <mat-slide-toggle
+          class="field-toggle"
+          [ngModel]="isFeatured()"
+          (ngModelChange)="isFeatured.set($event); touch()"
+          name="isFeatured"
+          >Featured</mat-slide-toggle
+        >
+
+        <mat-slide-toggle
+          class="field-toggle"
+          [ngModel]="isPublished()"
+          (ngModelChange)="isPublished.set($event); touch()"
+          name="isPublished"
+          >Published</mat-slide-toggle
+        >
+      </div>
+    </div>
+
+    <div class="editor-body" [hidden]="previewing()">
+      <app-editor [content]="content()" placeholder="Tell the story of the project…" (changed)="onContentChange($event)" />
+    </div>
+
+    @if (previewing()) {
+      <div class="project-preview-wrapper">
+        <article class="project card">
+          <header class="project-header {{ category() }}">
+            <h1 class="title pusher">{{ name() }}</h1>
+            <div class="date">
+              @if (isCurrent()) {
+                Current
+              } @else {
+                {{ startDate() }}
+                @if (startDate() && endDate()) {
+                  <span> - </span>
+                }
+                {{ endDate() }}
+              }
+            </div>
+          </header>
+
+          <section class="project-body">
+            <ui-blocks [content]="content()" />
+
+            @if (previewSkills().length > 0) {
+              <h2>Skills & Technology</h2>
+              <div class="cutout">
+                <div class="tag-container">
+                  @for (skill of previewSkills(); track skill._id) {
+                    <ui-tag type="skill" [text]="skill.name"></ui-tag>
+                  }
+                </div>
+              </div>
+            }
+          </section>
+        </article>
+      </div>
+    }
+  }
+</section>

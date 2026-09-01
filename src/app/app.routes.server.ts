@@ -14,6 +14,12 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Server,
   },
   {
+    // The authoring surface depends on a session held in the browser, so there is
+    // nothing meaningful for the server to render and no reason to try.
+    path: 'admin/**',
+    renderMode: RenderMode.Client,
+  },
+  {
     path: '**',
     renderMode: RenderMode.Server,
   },
