@@ -10,16 +10,66 @@
     <button mat-button (click)="signOut()">Sign out</button>
   </header>
 
-  <nav class="admin-filters">
-    @for (option of ['all', 'published', 'draft']; track option) {
-      <button
-        mat-button
-        [class.active]="filter() === option"
-        (click)="setFilter($any(option))"
-      >
-        {{ option }}
+  <!-- Search & Group Filter Toolbar -->
+  <div class="admin-toolbar">
+    <div class="search-box">
+      <mat-icon class="search-icon">search</mat-icon>
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search skill name, proficiency, acquired…"
+        [ngModel]="search()"
+        (ngModelChange)="search.set($event)"
+        (keyup.enter)="onSearch()"
+      />
+      @if (search()) {
+        <button
+          mat-icon-button
+          class="clear-btn"
+          (click)="clearSearch()"
+          aria-label="Clear search"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+      <button mat-button class="search-submit-btn" (click)="onSearch()">
+        Search
       </button>
-    }
+    </div>
+
+    <div class="category-filter">
+      <label class="filter-label" for="group-select">Group:</label>
+      <select
+        id="group-select"
+        class="category-select"
+        [ngModel]="group()"
+        (ngModelChange)="setGroup($event)"
+      >
+        @for (opt of groupOptions; track opt.id) {
+          <option [value]="opt.id">{{ opt.label }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <nav class="admin-filters">
+    <div class="status-filters">
+      @for (option of ['all', 'published', 'draft']; track option) {
+        <button
+          mat-button
+          [class.active]="filter() === option"
+          (click)="setFilter($any(option))"
+        >
+          {{ option }}
+        </button>
+      }
+    </div>
+
+    <div class="filter-summary">
+      @if (!loading()) {
+        <span>{{ totalCount() }} {{ totalCount() === 1 ? 'skill' : 'skills' }}</span>
+      }
+    </div>
   </nav>
 
   @if (error(); as message) {
@@ -29,20 +79,45 @@
   @if (loading()) {
     <p class="admin-empty">Loading…</p>
   } @else if (rows().length === 0) {
-    <p class="admin-empty">No skills found.</p>
+    <div class="admin-empty-state">
+      <p class="admin-empty">No skills found matching your criteria.</p>
+      @if (search() || group() !== 'all' || filter() !== 'all') {
+        <button
+          mat-button
+          class="reset-btn"
+          (click)="clearSearch(); setGroup('all'); setFilter('all')"
+        >
+          Reset all filters
+        </button>
+      }
+    </div>
   } @else {
-    <ul class="admin-rows">
+    <div class="admin-rows">
       @for (skill of rows(); track skill._id) {
-        <li class="admin-row">
-          <a class="row-title" [routerLink]="['/admin/skills', skill._id]">
-            {{ skill.name }}
-          </a>
+        <div class="admin-row">
+          <div class="row-main">
+            <a class="row-title" [routerLink]="['/admin/skills', skill._id]">
+              {{ skill.name }}
+            </a>
+
+            @if (skill.group) {
+              <div class="row-tags">
+                <button
+                  type="button"
+                  class="row-tag"
+                  (click)="onGroupClick(skill.group)"
+                  [title]="'Filter by group: ' + skill.group"
+                >
+                  {{ skill.group }}
+                </button>
+              </div>
+            }
+          </div>
 
           <div class="row-meta">
             <span class="row-status" [class.published]="skill.isPublished">
               {{ skill.isPublished ? 'published' : 'draft' }}
             </span>
-            <span class="row-group">{{ skill.group }}</span>
             <span class="row-level">{{ skill.level }}% ({{ skill.level | levelToName }})</span>
             @if (skill.isFeatured) {
               <span class="row-featured">★ Featured</span>
@@ -65,8 +140,51 @@
               }}</mat-icon>
             </button>
           </div>
-        </li>
+        </div>
       }
-    </ul>
+    </div>
+
+    <!-- Pagination Controls -->
+    @if (totalPages() > 1 || totalCount() > size()) {
+      <div class="admin-pagination">
+        <div class="pagination-info">
+          Page {{ page() }} of {{ totalPages() }}
+        </div>
+
+        <div class="pagination-controls">
+          <button
+            mat-button
+            [disabled]="isFirstPage()"
+            (click)="goToPrev()"
+          >
+            Previous
+          </button>
+
+          <span class="page-current">{{ page() }}</span>
+
+          <button
+            mat-button
+            [disabled]="isLastPage()"
+            (click)="goToNext()"
+          >
+            Next
+          </button>
+        </div>
+
+        <div class="pagination-size">
+          <label for="page-size-select">Per page:</label>
+          <select
+            id="page-size-select"
+            class="page-size-select"
+            [ngModel]="size()"
+            (ngModelChange)="setSize(+$event)"
+          >
+            <option [value]="10">10</option>
+            <option [value]="25">25</option>
+            <option [value]="50">50</option>
+          </select>
+        </div>
+      </div>
+    }
   }
 </section>

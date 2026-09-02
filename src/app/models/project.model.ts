@@ -56,7 +56,19 @@ export interface ProjectAdminPage {
     page: number;
     totalPages: number;
     totalCount: number;
+    isFirstPage?: boolean;
+    isLastPage?: boolean;
   };
+}
+
+export interface ProjectAdminListParams {
+  page?: number;
+  size?: number;
+  status?: 'published' | 'draft';
+  category?: string;
+  platform?: string;
+  search?: string;
+  name?: string;
 }
 
 export interface ProjectLink {

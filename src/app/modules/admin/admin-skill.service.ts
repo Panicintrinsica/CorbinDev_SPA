@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import {
   Skill,
+  SkillAdminListParams,
   SkillAdminPage,
   SkillDraft,
   SkillTag,
@@ -15,9 +16,29 @@ export class AdminSkillService {
   private http = inject(HttpClient);
   private API = environment.API;
 
-  list(page = 1, size = 200, status?: 'published' | 'draft') {
+  list(
+    paramsOrPage: SkillAdminListParams | number = 1,
+    size = 25,
+    status?: 'published' | 'draft',
+  ) {
+    if (typeof paramsOrPage === 'number') {
+      return this.http.get<SkillAdminPage>(`${this.API}/skills/admin`, {
+        params: { page: paramsOrPage, size, ...(status ? { status } : {}) },
+      });
+    }
+
+    const params = paramsOrPage;
+    const httpParams: Record<string, string | number> = {};
+    if (params.page !== undefined) httpParams['page'] = params.page;
+    if (params.size !== undefined) httpParams['size'] = params.size;
+    if (params.status) httpParams['status'] = params.status;
+    if (params.group && params.group !== 'all') httpParams['group'] = params.group;
+    if (params.category && params.category !== 'all') httpParams['group'] = params.category;
+    if (params.search && params.search.trim()) httpParams['search'] = params.search.trim();
+    if (params.name && params.name.trim()) httpParams['name'] = params.name.trim();
+
     return this.http.get<SkillAdminPage>(`${this.API}/skills/admin`, {
-      params: { page, size, ...(status ? { status } : {}) },
+      params: httpParams,
     });
   }
 

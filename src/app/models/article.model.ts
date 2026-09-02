@@ -54,7 +54,19 @@ export interface ArticleAdminPage {
     page: number;
     totalPages: number;
     totalCount: number;
+    isFirstPage?: boolean;
+    isLastPage?: boolean;
   };
+}
+
+export interface ArticleAdminListParams {
+  page?: number;
+  size?: number;
+  status?: 'published' | 'draft';
+  category?: string;
+  search?: string;
+  tag?: string;
+  title?: string;
 }
 
 /**

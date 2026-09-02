@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import {
   Article,
+  ArticleAdminListParams,
   ArticleAdminPage,
   ArticleDraft,
 } from '../../models/article.model';
@@ -19,10 +20,30 @@ export class AdminArticleService {
   private http = inject(HttpClient);
   private API = environment.API;
 
-  /** Every article including drafts. `status` narrows to one or the other. */
-  list(page = 1, size = 25, status?: 'published' | 'draft') {
+  /** Every article including drafts, with pagination, category filter and search. */
+  list(
+    paramsOrPage: ArticleAdminListParams | number = 1,
+    size = 25,
+    status?: 'published' | 'draft',
+  ) {
+    if (typeof paramsOrPage === 'number') {
+      return this.http.get<ArticleAdminPage>(`${this.API}/articles/admin`, {
+        params: { page: paramsOrPage, size, ...(status ? { status } : {}) },
+      });
+    }
+
+    const params = paramsOrPage;
+    const httpParams: Record<string, string | number> = {};
+    if (params.page !== undefined) httpParams['page'] = params.page;
+    if (params.size !== undefined) httpParams['size'] = params.size;
+    if (params.status) httpParams['status'] = params.status;
+    if (params.category && params.category !== 'all') httpParams['category'] = params.category;
+    if (params.search && params.search.trim()) httpParams['search'] = params.search.trim();
+    if (params.tag && params.tag.trim()) httpParams['tag'] = params.tag.trim();
+    if (params.title && params.title.trim()) httpParams['title'] = params.title.trim();
+
     return this.http.get<ArticleAdminPage>(`${this.API}/articles/admin`, {
-      params: { page, size, ...(status ? { status } : {}) },
+      params: httpParams,
     });
   }
 

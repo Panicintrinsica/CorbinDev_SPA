@@ -3,12 +3,13 @@
 // component-scoped rules would never reach it.
 
 .editor-shell {
+  color-scheme: light dark;
   position: relative;
   min-height: 24rem;
-  padding: 1rem 0.5rem;
+  padding: 0 0.5rem 0 3rem;
   border-radius: 6px;
-  background: var(--body-lowlight);
-  border: 1px solid var(--lighter-10);
+  background: light-dark(#ffffff, var(--body-lowlight));
+  border: 1px solid light-dark(rgba(0, 0, 0, 0.12), var(--lighter-10));
 }
 
 .editor-loading {

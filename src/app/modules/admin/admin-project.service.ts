@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import {
   Project,
+  ProjectAdminListParams,
   ProjectAdminPage,
   ProjectDraft,
 } from '../../models/project.model';
@@ -14,9 +15,29 @@ export class AdminProjectService {
   private http = inject(HttpClient);
   private API = environment.API;
 
-  list(page = 1, size = 100, status?: 'published' | 'draft') {
+  list(
+    paramsOrPage: ProjectAdminListParams | number = 1,
+    size = 25,
+    status?: 'published' | 'draft',
+  ) {
+    if (typeof paramsOrPage === 'number') {
+      return this.http.get<ProjectAdminPage>(`${this.API}/projects/admin`, {
+        params: { page: paramsOrPage, size, ...(status ? { status } : {}) },
+      });
+    }
+
+    const params = paramsOrPage;
+    const httpParams: Record<string, string | number> = {};
+    if (params.page !== undefined) httpParams['page'] = params.page;
+    if (params.size !== undefined) httpParams['size'] = params.size;
+    if (params.status) httpParams['status'] = params.status;
+    if (params.category && params.category !== 'all') httpParams['category'] = params.category;
+    if (params.platform && params.platform !== 'all') httpParams['platform'] = params.platform;
+    if (params.search && params.search.trim()) httpParams['search'] = params.search.trim();
+    if (params.name && params.name.trim()) httpParams['name'] = params.name.trim();
+
     return this.http.get<ProjectAdminPage>(`${this.API}/projects/admin`, {
-      params: { page, size, ...(status ? { status } : {}) },
+      params: httpParams,
     });
   }
 

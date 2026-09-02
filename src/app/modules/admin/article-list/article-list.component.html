@@ -10,16 +10,66 @@
     <button mat-button (click)="signOut()">Sign out</button>
   </header>
 
-  <nav class="admin-filters">
-    @for (option of ['all', 'published', 'draft']; track option) {
-      <button
-        mat-button
-        [class.active]="filter() === option"
-        (click)="setFilter($any(option))"
-      >
-        {{ option }}
+  <!-- Search & Category Filter Toolbar -->
+  <div class="admin-toolbar">
+    <div class="search-box">
+      <mat-icon class="search-icon">search</mat-icon>
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search title or tags…"
+        [ngModel]="search()"
+        (ngModelChange)="search.set($event)"
+        (keyup.enter)="onSearch()"
+      />
+      @if (search()) {
+        <button
+          mat-icon-button
+          class="clear-btn"
+          (click)="clearSearch()"
+          aria-label="Clear search"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+      <button mat-button class="search-submit-btn" (click)="onSearch()">
+        Search
       </button>
-    }
+    </div>
+
+    <div class="category-filter">
+      <label class="filter-label" for="category-select">Category:</label>
+      <select
+        id="category-select"
+        class="category-select"
+        [ngModel]="category()"
+        (ngModelChange)="setCategory($event)"
+      >
+        @for (opt of categoryOptions; track opt.id) {
+          <option [value]="opt.id">{{ opt.label }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <nav class="admin-filters">
+    <div class="status-filters">
+      @for (option of ['all', 'published', 'draft']; track option) {
+        <button
+          mat-button
+          [class.active]="filter() === option"
+          (click)="setFilter($any(option))"
+        >
+          {{ option }}
+        </button>
+      }
+    </div>
+
+    <div class="filter-summary">
+      @if (!loading()) {
+        <span>{{ totalCount() }} {{ totalCount() === 1 ? 'article' : 'articles' }}</span>
+      }
+    </div>
   </nav>
 
   @if (error(); as message) {
@@ -29,20 +79,50 @@
   @if (loading()) {
     <p class="admin-empty">Loading…</p>
   } @else if (rows().length === 0) {
-    <p class="admin-empty">Nothing here yet.</p>
+    <div class="admin-empty-state">
+      <p class="admin-empty">No articles found matching your criteria.</p>
+      @if (search() || category() !== 'all' || filter() !== 'all') {
+        <button
+          mat-button
+          class="reset-btn"
+          (click)="clearSearch(); setCategory('all'); setFilter('all')"
+        >
+          Reset all filters
+        </button>
+      }
+    </div>
   } @else {
-    <ul class="admin-rows">
+    <div class="admin-rows">
       @for (article of rows(); track article._id) {
-        <li class="admin-row">
-          <a class="row-title" [routerLink]="['/admin/articles', article._id]">
-            {{ article.title }}
-          </a>
+        <div class="admin-row">
+          <div class="row-main">
+            <a class="row-title" [routerLink]="['/admin/articles', article._id]">
+              {{ article.title }}
+            </a>
+
+            @if (article.tags && article.tags.length > 0) {
+              <div class="row-tags">
+                @for (t of article.tags; track t) {
+                  <button
+                    type="button"
+                    class="row-tag"
+                    (click)="onTagClick(t)"
+                    [title]="'Filter by tag: #' + t"
+                  >
+                    #{{ t }}
+                  </button>
+                }
+              </div>
+            }
+          </div>
 
           <div class="row-meta">
             <span class="row-status" [class.published]="article.isPublished">
               {{ article.isPublished ? 'published' : 'draft' }}
             </span>
-            <span class="row-category">{{ article.category }}</span>
+            @if (article.category) {
+              <span class="row-category">{{ article.category }}</span>
+            }
             <span class="row-date">{{ article.updatedAt | date: 'mediumDate' }}</span>
           </div>
 
@@ -70,8 +150,51 @@
               }}</mat-icon>
             </button>
           </div>
-        </li>
+        </div>
       }
-    </ul>
+    </div>
+
+    <!-- Pagination Controls -->
+    @if (totalPages() > 1 || totalCount() > size()) {
+      <div class="admin-pagination">
+        <div class="pagination-info">
+          Page {{ page() }} of {{ totalPages() }}
+        </div>
+
+        <div class="pagination-controls">
+          <button
+            mat-button
+            [disabled]="isFirstPage()"
+            (click)="goToPrev()"
+          >
+            Previous
+          </button>
+
+          <span class="page-current">{{ page() }}</span>
+
+          <button
+            mat-button
+            [disabled]="isLastPage()"
+            (click)="goToNext()"
+          >
+            Next
+          </button>
+        </div>
+
+        <div class="pagination-size">
+          <label for="page-size-select">Per page:</label>
+          <select
+            id="page-size-select"
+            class="page-size-select"
+            [ngModel]="size()"
+            (ngModelChange)="setSize(+$event)"
+          >
+            <option [value]="10">10</option>
+            <option [value]="25">25</option>
+            <option [value]="50">50</option>
+          </select>
+        </div>
+      </div>
+    }
   }
 </section>

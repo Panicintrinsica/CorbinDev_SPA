@@ -42,7 +42,19 @@ export interface SkillAdminPage {
     page: number;
     totalPages: number;
     totalCount: number;
+    isFirstPage?: boolean;
+    isLastPage?: boolean;
   };
+}
+
+export interface SkillAdminListParams {
+  page?: number;
+  size?: number;
+  status?: 'published' | 'draft';
+  group?: string;
+  category?: string;
+  search?: string;
+  name?: string;
 }
 
 export function emptySkill(): Skill {

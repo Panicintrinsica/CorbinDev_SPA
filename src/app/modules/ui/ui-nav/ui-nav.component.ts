@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import {Component, inject, signal} from '@angular/core';
 import { MatToolbar } from '@angular/material/toolbar';
 import { RouterLink } from '@angular/router';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatIcon } from '@angular/material/icon';
+import {AuthService} from "../../../auth/auth.service";
 
 @Component({
   selector: 'ui-nav',
@@ -21,4 +22,17 @@ import { MatIcon } from '@angular/material/icon';
   styleUrl: './ui-nav.component.scss',
   standalone: true,
 })
-export class UiNavComponent {}
+export class UiNavComponent {
+  auth = inject(AuthService)
+
+  isAdmin = signal(false)
+
+  constructor() {
+    this.auth.loadIdentity().then(() => {
+      if(this.auth.identity()?.roles.find((role) => role === 'owner')) {
+        this.isAdmin.set(true)
+      }
+    })
+  }
+
+}

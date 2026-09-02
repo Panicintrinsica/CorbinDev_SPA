@@ -8,12 +8,8 @@
 ui-blocks {
   display: block;
 
-  // The measure is set here rather than on each block so a stretched image can
-  // deliberately break out of it.
-  --block-measure: 42rem;
-
   > .block {
-    max-width: var(--block-measure);
+
     margin-inline: auto;
   }
 
@@ -235,9 +231,10 @@ ui-blocks {
 // The editor writes into the same document, so its own surface gets the site's
 // colours instead of Editor.js' default white sheet.
 .editorjs-host {
+  color-scheme: light dark;
   --block-measure: none;
 
-  color: var(--textColor-normal);
+  color: light-dark(#1e293b, var(--textColor-normal));
 
   .codex-editor__redactor {
     padding-bottom: 12rem !important;
@@ -250,39 +247,45 @@ ui-blocks {
 
   .ce-toolbar__plus,
   .ce-toolbar__settings-btn {
-    color: var(--textColor-normal);
-    background: var(--body-highlight);
-    border: 1px solid var(--lighter-10);
+    color: light-dark(#334155, var(--textColor-normal));
+    background: light-dark(#f1f5f9, var(--body-highlight));
+    border: 1px solid light-dark(rgba(0, 0, 0, 0.12), var(--lighter-10));
 
     &:hover {
-      background: var(--body-accent);
+      background: light-dark(#e2e8f0, var(--body-accent));
     }
   }
 
   .ce-popover {
-    --color-background-primary: var(--body);
-    --color-background-primary-hover: var(--body-accent);
-    --color-text-primary: var(--textColor-normal);
-    --color-border-icon: var(--lighter-10);
-    --color-background-icon: var(--body-highlight);
+    --color-background-primary: light-dark(#ffffff, var(--body));
+    --color-background-primary-hover: light-dark(#f1f5f9, var(--body-accent));
+    --color-text-primary: light-dark(#0f172a, var(--textColor-normal));
+    --color-border-icon: light-dark(rgba(0, 0, 0, 0.12), var(--lighter-10));
+    --color-background-icon: light-dark(#f8fafc, var(--body-highlight));
   }
 
   .ce-inline-toolbar {
-    color: var(--textColor-normal);
-    background: var(--body);
-    border: 1px solid var(--lighter-10);
+    color: light-dark(#0f172a, var(--textColor-normal));
+    background: light-dark(#ffffff, var(--body));
+    border: 1px solid light-dark(rgba(0, 0, 0, 0.12), var(--lighter-10));
   }
 
   .cdx-block,
   .ce-paragraph,
   .ce-header {
-    color: var(--textColor-normal);
+    color: light-dark(#1e293b, var(--textColor-normal));
   }
 
   .ce-code__textarea,
   .cdx-input {
-    color: var(--textColor-normal);
-    background: var(--body-lowlight);
-    border-color: var(--lighter-10);
+    color: light-dark(#0f172a, var(--textColor-normal));
+    background: light-dark(#f8fafc, var(--body-lowlight));
+    border-color: light-dark(rgba(0, 0, 0, 0.12), var(--lighter-10));
+  }
+}
+
+.codex-editor {
+  .ce-block {
+    width: 100%;
   }
 }

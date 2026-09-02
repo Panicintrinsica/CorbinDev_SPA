@@ -343,14 +343,14 @@ ul > li::before  {
   color: var(--primary);
 }
 
-ul > ul > li::before,
-ul > li > ul > li::before {
+ul ul li::before,
+ul li ul > li::before {
   content: "□";
   color: var(--secondary);
 }
 
-ul > ul > ul > li::before,
-ul > li > ul > li > ul > li::before{
+ul ul ul li::before,
+ul li ul ul li::before{
   content: "-";
   color: var(--accent);
 }
